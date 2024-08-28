@@ -7,6 +7,7 @@ use App\Http\Requests\PostRequest;
 use App\Models\Post;
 use App\Models\Category;
 use Illuminate\Support\Facades\Log;
+use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 
 class PostController extends Controller
 {
@@ -23,12 +24,31 @@ class PostController extends Controller
         return view('posts.create')->with('categories', $categories);
     }
 
-    public function store(PostRequest $request)
+    
+  public function store(Request $request)
     {
-        $input = $request['post'];
-        Post::create($input);
-        return redirect('/posts/create')->with('success', '投稿しました');
+        $input = $request->all(); // 全ての入力データを取得
+
+        try {
+            // 画像ファイルがアップロードされたかを確認
+            if ($request->hasFile('image')) {
+                // 画像をCloudinaryにアップロード
+                $uploadedFileUrl = Cloudinary::upload($request->file('image')->getRealPath())->getSecurePath();
+                // 画像のURLを$inputに追加
+                $input['image_url'] = $uploadedFileUrl;
+            }
+
+            // データベースに保存
+            Post::create($input);
+
+            return redirect('/posts/create')->with('success', '投稿しました');
+        } catch (\Exception $e) {
+            return redirect('/posts/create')->with('error', '投稿に失敗しました: ' . $e->getMessage());
+        }
     }
+
+
+
 
     public function searchPage(Request $request)
     {

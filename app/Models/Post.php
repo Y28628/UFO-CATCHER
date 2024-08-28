@@ -16,6 +16,7 @@ class Post extends Model
         'fee',
         'body',
         'series', 
+        'image_url',
     ];
 
     public function category()
