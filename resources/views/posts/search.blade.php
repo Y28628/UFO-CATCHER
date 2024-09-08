@@ -178,7 +178,7 @@
                     @foreach($posts as $post)
                     <div class="post">
                         <a href="/posts/{{ $post->id }}"><h2 class="title">{{ $post->title }}</h2></a>
-                        <a href="/category/{{ $post->category->id }}">{{ $post->category->name }}</a>
+                        <span>{{ $post->category->name }}</span>
                         <p class="body">{{ $post->body }}</p>
                         <p class="store_name">店舗名: {{ $post->store_name }}</p>
                         <p class="fee">料金: {{ $post->fee }}円</p>
